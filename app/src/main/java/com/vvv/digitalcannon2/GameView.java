@@ -25,6 +25,7 @@ public class GameView extends SurfaceView implements Runnable {
     private final EventManager eventManager;
     private final int screenX;
     private final int screenY;
+    private final Background backgroundBitmap;
 
     public GameView(Context context) {
         super(context);
@@ -49,6 +50,8 @@ public class GameView extends SurfaceView implements Runnable {
         display.getSize(point);
         screenX = point.x;
         screenY = point.y;
+
+        backgroundBitmap = new Background(context, R.drawable.game_bg, screenX, screenY);
 
         initStateButtons();
     }
@@ -138,6 +141,7 @@ public class GameView extends SurfaceView implements Runnable {
             if (canvas == null) return;
             canvas.drawColor(Color.BLACK);
 
+            backgroundBitmap.draw(canvas);
             drawUIElements(canvas);
 
             surfaceHolder.unlockCanvasAndPost(canvas);
