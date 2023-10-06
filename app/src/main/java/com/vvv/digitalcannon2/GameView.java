@@ -26,6 +26,7 @@ public class GameView extends SurfaceView implements Runnable {
     private final int screenX;
     private final int screenY;
     private final Background backgroundBitmap;
+    private final Cannon cannon;
 
     public GameView(Context context) {
         super(context);
@@ -52,6 +53,7 @@ public class GameView extends SurfaceView implements Runnable {
         screenY = point.y;
 
         backgroundBitmap = new Background(context, R.drawable.game_bg, screenX, screenY);
+        cannon = new Cannon(context, R.drawable.cannon, screenX, screenY);
 
         initStateButtons();
     }
@@ -142,6 +144,7 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawColor(Color.BLACK);
 
             backgroundBitmap.draw(canvas);
+            cannon.draw(canvas);
             drawUIElements(canvas);
 
             surfaceHolder.unlockCanvasAndPost(canvas);
