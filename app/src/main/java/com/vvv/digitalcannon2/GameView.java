@@ -135,6 +135,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void update() {
         eventManager.processEvents();
+        cannon.update();
     }
 
     private void draw() {
