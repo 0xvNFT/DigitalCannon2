@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Point;
 
 public class Cannon {
     private final Bitmap bitmap;
@@ -15,14 +16,13 @@ public class Cannon {
     public Cannon(Context context, int drawableResId, int screenX, int screenY) {
         bitmap = BitmapFactory.decodeResource(context.getResources(), drawableResId);
         x = (screenX / 2) - (bitmap.getWidth() / 2);
-        y = screenY - bitmap.getHeight();
+        y = screenY - bitmap.getHeight() - 50;
     }
 
     public void update() {
         time += 0.04F;
 
         angle = 0 + 60 * (float) Math.sin(time);
-
 //        if (angle > 160) angle = 160;
 //        if (angle < 20) angle = 20;
     }
@@ -35,5 +35,22 @@ public class Cannon {
 
         canvas.drawBitmap(bitmap, matrix, null);
     }
+
+    public Point getTipCoordinates() {
+
+        float tipX = 0;
+        float tipY = -bitmap.getHeight() / 2.0f;
+
+        float angleRad = (float) Math.toRadians(angle);
+
+        float rotatedX = (float) (tipX * Math.cos(angleRad) - tipY * Math.sin(angleRad));
+        float rotatedY = (float) (tipX * Math.sin(angleRad) + tipY * Math.cos(angleRad));
+
+        int finalX = (int) (x + bitmap.getWidth() / 2.0f + rotatedX);
+        int finalY = (int) (y + bitmap.getHeight() / 2.0f + rotatedY);
+
+        return new Point(finalX, finalY);
+    }
+
 }
 

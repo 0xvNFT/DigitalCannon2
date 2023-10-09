@@ -146,6 +146,9 @@ public class GameView extends SurfaceView implements Runnable {
 
             backgroundBitmap.draw(canvas);
             cannon.draw(canvas);
+            Point tip = cannon.getTipCoordinates();
+            float circleRadius = 5.0f;
+            canvas.drawCircle(tip.x, tip.y, circleRadius, redPaint);
             drawUIElements(canvas);
 
             surfaceHolder.unlockCanvasAndPost(canvas);
