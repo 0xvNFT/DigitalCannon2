@@ -12,7 +12,7 @@ public class Cannon {
     private final int x, y;
     private float angle = 160;
     private float time = 0;
-    private final float deltaAngle = 20;
+
     public Cannon(Context context, int drawableResId, int screenX, int screenY) {
         bitmap = BitmapFactory.decodeResource(context.getResources(), drawableResId);
         x = (screenX / 2) - (bitmap.getWidth() / 2);
@@ -34,6 +34,10 @@ public class Cannon {
         matrix.postTranslate(x + bitmap.getWidth() / 2.0f, y + bitmap.getHeight() / 2.0f);
 
         canvas.drawBitmap(bitmap, matrix, null);
+    }
+
+    public float getAngle() {
+        return angle;
     }
 
     public Point getTipCoordinates() {
