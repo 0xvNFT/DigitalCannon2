@@ -17,7 +17,7 @@ public class CannonBallManager {
         this.fireInterval = fireInterval;
         this.screenX = screenX;
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             cannonBalls.add(new CannonBall(context, drawableResId));
         }
     }
@@ -41,6 +41,10 @@ public class CannonBallManager {
     public void updateAll(int screenX, int screenY) {
         for (CannonBall cannonBall : cannonBalls) {
             cannonBall.update(screenX, screenY);
+
+            if (cannonBall.y > screenY) {
+                cannonBall.fired = false;
+            }
         }
     }
 

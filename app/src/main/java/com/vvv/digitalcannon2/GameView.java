@@ -54,7 +54,7 @@ public class GameView extends SurfaceView implements Runnable {
 
         backgroundBitmap = new Background(context, R.drawable.game_bg, screenX, screenY);
         cannon = new Cannon(context, R.drawable.cannon, screenX, screenY);
-        cannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 500, screenX);
+        cannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 1500, screenX);
 
         initStateButtons();
     }
