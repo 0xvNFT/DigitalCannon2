@@ -75,7 +75,7 @@ public class GameView extends SurfaceView implements Runnable {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             float angle = cannon.getAngle();
             Point tip = cannon.getTipCoordinates();
-            cannonBallManager.tryFireCannonBall(angle, tip);
+            cannonBallManager.tryFireCannonBall(angle, tip, 15);
         }
         touchStateButtons(x, y);
         return true;

@@ -22,7 +22,7 @@ public class CannonBallManager {
         }
     }
 
-    public void tryFireCannonBall(float angle, Point tip) {
+    public void tryFireCannonBall(float angle, Point tip, int speedFactor) {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastFiredTime >= fireInterval) {
             lastFiredTime = currentTime;
@@ -30,7 +30,7 @@ public class CannonBallManager {
             for (CannonBall cannonBall : cannonBalls) {
                 if (!cannonBall.fired) {
                     cannonBall.setPosition(tip.x, tip.y);
-                    cannonBall.setVelocity(angle);
+                    cannonBall.setVelocity(angle, speedFactor);
                     cannonBall.fire();
                     return;
                 }

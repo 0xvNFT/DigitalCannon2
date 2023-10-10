@@ -21,11 +21,12 @@ public class CannonBall {
         this.y = y;
     }
 
-    public void setVelocity(float angle) {
+    public void setVelocity(float angle, int speedFactor) {
         float angleRad = (float) Math.toRadians(angle);
-        velocityX = (int) (10 * Math.sin(angleRad));
-        velocityY = (int) (-10 * Math.cos(angleRad));
+        velocityX = (int) (speedFactor * Math.sin(angleRad));
+        velocityY = (int) (-speedFactor * Math.cos(angleRad));
     }
+
 
     public void fire() {
         fired = true;
