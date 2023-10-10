@@ -59,16 +59,17 @@ public class GameView extends SurfaceView implements Runnable {
         backgroundBitmap = new Background(context, R.drawable.game_bg, screenX, screenY);
         cannon = new Cannon(context, R.drawable.cannon, screenX, screenY);
 
-        int offsetXLeft = -250;
-        int offsetXRight = 250;
-        float miniCannonScale = 0.5f;
+        int offsetXLeft = -screenX / 3;
+        int offsetXRight = screenX / 3;
+        float miniCannonScale = screenY / 3000f;
+
 
         leftMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXLeft, miniCannonScale, cannon);
         rightMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXRight, miniCannonScale, cannon);
 
         cannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 1500, screenX, 1);
-        leftMiniCannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 2000, screenX, miniCannonScale);
-        rightMiniCannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 2000, screenX, miniCannonScale);
+        leftMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
+        rightMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
         initStateButtons();
     }
 
