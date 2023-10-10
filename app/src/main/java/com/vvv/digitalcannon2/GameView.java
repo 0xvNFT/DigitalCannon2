@@ -28,6 +28,10 @@ public class GameView extends SurfaceView implements Runnable {
     private final Background backgroundBitmap;
     private final Cannon cannon;
     private final CannonBallManager cannonBallManager;
+    private final CannonBallManager leftMiniCannonBallManager;
+    private final CannonBallManager rightMiniCannonBallManager;
+    private final MiniCannon leftMiniCannon;
+    private final MiniCannon rightMiniCannon;
     public GameView(Context context) {
         super(context);
 
@@ -54,8 +58,17 @@ public class GameView extends SurfaceView implements Runnable {
 
         backgroundBitmap = new Background(context, R.drawable.game_bg, screenX, screenY);
         cannon = new Cannon(context, R.drawable.cannon, screenX, screenY);
-        cannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 1500, screenX);
 
+        int offsetXLeft = -250;
+        int offsetXRight = 250;
+        float miniCannonScale = 0.5f;
+
+        leftMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXLeft, miniCannonScale, cannon);
+        rightMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXRight, miniCannonScale, cannon);
+
+        cannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 1500, screenX, 1);
+        leftMiniCannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 2000, screenX, miniCannonScale);
+        rightMiniCannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 2000, screenX, miniCannonScale);
         initStateButtons();
     }
 
@@ -76,6 +89,8 @@ public class GameView extends SurfaceView implements Runnable {
             float angle = cannon.getAngle();
             Point tip = cannon.getTipCoordinates();
             cannonBallManager.tryFireCannonBall(angle, tip, 15);
+            leftMiniCannonBallManager.tryFireMiniCannonBall(leftMiniCannon, 12);
+            rightMiniCannonBallManager.tryFireMiniCannonBall(rightMiniCannon, 12);
         }
         touchStateButtons(x, y);
         return true;
@@ -142,7 +157,11 @@ public class GameView extends SurfaceView implements Runnable {
     private void update() {
         eventManager.processEvents();
         cannon.update();
+        leftMiniCannon.update();
+        rightMiniCannon.update();
         cannonBallManager.updateAll(screenX, screenY);
+        leftMiniCannonBallManager.updateAll(screenX, screenY);
+        rightMiniCannonBallManager.updateAll(screenX, screenY);
     }
 
     private void draw() {
@@ -153,7 +172,11 @@ public class GameView extends SurfaceView implements Runnable {
 
             backgroundBitmap.draw(canvas);
             cannon.draw(canvas);
+            leftMiniCannon.draw(canvas);
+            rightMiniCannon.draw(canvas);
             cannonBallManager.drawAll(canvas);
+            leftMiniCannonBallManager.drawAll(canvas);
+            rightMiniCannonBallManager.drawAll(canvas);
 
             Point tip = cannon.getTipCoordinates();
             float circleRadius = 5.0f;

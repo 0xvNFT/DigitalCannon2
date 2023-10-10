@@ -9,8 +9,8 @@ import android.graphics.Point;
 
 public class Cannon {
     private final Bitmap bitmap;
-    private final int x, y;
-    private float angle = 160;
+    public int x, y;
+    public float angle = 160;
     private float time = 0;
 
     public Cannon(Context context, int drawableResId, int screenX, int screenY) {
@@ -23,8 +23,6 @@ public class Cannon {
         time += 0.04F;
 
         angle = 0 + 60 * (float) Math.sin(time);
-//        if (angle > 160) angle = 160;
-//        if (angle < 20) angle = 20;
     }
 
     public void draw(Canvas canvas) {

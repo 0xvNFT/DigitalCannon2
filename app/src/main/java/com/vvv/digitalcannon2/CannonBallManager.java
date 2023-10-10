@@ -12,12 +12,14 @@ public class CannonBallManager {
     private final long fireInterval;
     private final int screenX;
     private long lastFiredTime = 0;
+    private final float scale;
 
-    public CannonBallManager(Context context, int drawableResId, long fireInterval, int screenX) {
+    public CannonBallManager(Context context, int drawableResId, long fireInterval, int screenX, float scale) {
         this.fireInterval = fireInterval;
         this.screenX = screenX;
+        this.scale = scale;
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 20; i++) {
             cannonBalls.add(new CannonBall(context, drawableResId));
         }
     }
@@ -37,6 +39,16 @@ public class CannonBallManager {
             }
         }
     }
+
+    public void tryFireMiniCannonBall(Cannon cannon, int speedFactor) {
+        float angle = cannon.getAngle();
+        Point tip = cannon.getTipCoordinates();
+        tip.x += (int) ((1 - scale) * 50);
+        tip.y += (int) ((1 - scale) * 50);
+
+        tryFireCannonBall(angle, tip, speedFactor);
+    }
+
 
     public void updateAll(int screenX, int screenY) {
         for (CannonBall cannonBall : cannonBalls) {
