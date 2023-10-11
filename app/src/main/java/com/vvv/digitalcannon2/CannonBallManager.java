@@ -40,12 +40,12 @@ public class CannonBallManager {
         }
     }
 
-    public void tryFireMiniCannonBall(Cannon cannon, int speedFactor) {
-        float angle = cannon.getAngle();
-        Point tip = cannon.getTipCoordinates();
+    public void tryFireMiniCannonBall(MiniCannon miniCannon, int speedFactor) {
+        float angle = miniCannon.getAngle();
+        Point tip = miniCannon.getTipCoordinates();
 
-        float offsetX = (1 - scale) * 100;
-        float offsetY = (1 - scale) * 100;
+        float offsetX = (1 - scale) * 10;
+        float offsetY = (1 - scale) * 10;
 
         float angleRad = (float) Math.toRadians(angle);
         float rotatedOffsetX = (float) (offsetX * Math.cos(angleRad) - offsetY * Math.sin(angleRad));

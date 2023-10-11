@@ -63,7 +63,6 @@ public class GameView extends SurfaceView implements Runnable {
         int offsetXRight = screenX / 3;
         float miniCannonScale = screenY / 3000f;
 
-
         leftMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXLeft, miniCannonScale, cannon);
         rightMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXRight, miniCannonScale, cannon);
 
@@ -158,8 +157,10 @@ public class GameView extends SurfaceView implements Runnable {
     private void update() {
         eventManager.processEvents();
         cannon.update();
+
         leftMiniCannon.update();
         rightMiniCannon.update();
+
         cannonBallManager.updateAll(screenX, screenY);
         leftMiniCannonBallManager.updateAll(screenX, screenY);
         rightMiniCannonBallManager.updateAll(screenX, screenY);
@@ -182,6 +183,10 @@ public class GameView extends SurfaceView implements Runnable {
             Point tip = cannon.getTipCoordinates();
             float circleRadius = 5.0f;
             canvas.drawCircle(tip.x, tip.y, circleRadius, redPaint);
+            Point leftTip = leftMiniCannon.getTipCoordinates();
+            canvas.drawCircle(leftTip.x, leftTip.y, circleRadius, redPaint);
+            Point rightTip = rightMiniCannon.getTipCoordinates();
+            canvas.drawCircle(rightTip.x, rightTip.y, circleRadius, redPaint);
 
             drawUIElements(canvas);
 
