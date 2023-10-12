@@ -32,6 +32,7 @@ public class GameView extends SurfaceView implements Runnable {
     private final CannonBallManager rightMiniCannonBallManager;
     private final MiniCannon leftMiniCannon;
     private final MiniCannon rightMiniCannon;
+    private final TargetBoxManager targetBoxManager;
     public GameView(Context context) {
         super(context);
 
@@ -67,6 +68,11 @@ public class GameView extends SurfaceView implements Runnable {
         rightMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXRight, miniCannonScale, cannon);
 
         cannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 1500, screenX, 1);
+        int[] targetBoxResIds = {R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five
+                , R.drawable.six, R.drawable.seven, R.drawable.eight, R.drawable.nine, R.drawable.ten
+                , R.drawable.fifteen, R.drawable.twenty};
+        targetBoxManager = new TargetBoxManager(context, targetBoxResIds, screenY);
+
         leftMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
         rightMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
         initStateButtons();
@@ -162,6 +168,7 @@ public class GameView extends SurfaceView implements Runnable {
         rightMiniCannon.update();
 
         cannonBallManager.updateAll(screenX, screenY);
+        targetBoxManager.updateAll();
         leftMiniCannonBallManager.updateAll(screenX, screenY);
         rightMiniCannonBallManager.updateAll(screenX, screenY);
     }
@@ -177,6 +184,9 @@ public class GameView extends SurfaceView implements Runnable {
             leftMiniCannon.draw(canvas);
             rightMiniCannon.draw(canvas);
             cannonBallManager.drawAll(canvas);
+
+            targetBoxManager.drawAll(canvas);
+
             leftMiniCannonBallManager.drawAll(canvas);
             rightMiniCannonBallManager.drawAll(canvas);
 
