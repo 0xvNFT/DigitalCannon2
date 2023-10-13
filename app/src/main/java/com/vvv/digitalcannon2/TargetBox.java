@@ -9,14 +9,24 @@ public class TargetBox {
     private final Bitmap bitmap;
     public int x, y;
     private final int speed;
+    public int delay;
 
-    public TargetBox(Context context, int drawableResId, int speed) {
+    public TargetBox(Context context, int drawableResId, int x, int y, int speed, int delay) {
         bitmap = BitmapFactory.decodeResource(context.getResources(), drawableResId);
+        this.x = x;
+        this.y = y;
         this.speed = speed;
+        this.delay = delay;
+
     }
 
+
     public void update() {
-        y += speed;
+        if (delay <= 0) {
+            y += speed;
+        } else {
+            delay--;
+        }
     }
 
     public void draw(Canvas canvas) {
