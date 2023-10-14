@@ -26,7 +26,7 @@ public class TargetBoxManager {
                 x = random.nextInt(screenX - boxWidth);
                 y = -boxHeight - random.nextInt(500);
             } while (doesOverlap(x, y, boxWidth, boxHeight));
-            targetBoxes.add(new TargetBox(context, resId, x, y, 5, delay));
+            targetBoxes.add(new TargetBox(context, resId, x, y, 3, delay));
         }
     }
 

@@ -68,9 +68,7 @@ public class GameView extends SurfaceView implements Runnable {
         rightMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXRight, miniCannonScale, cannon);
 
         cannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 1500, screenX, 1);
-        int[] targetBoxResIds = {R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five
-                , R.drawable.six, R.drawable.seven, R.drawable.eight, R.drawable.nine, R.drawable.ten
-                , R.drawable.fifteen, R.drawable.twenty};
+        int[] targetBoxResIds = {R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five};
         targetBoxManager = new TargetBoxManager(context, targetBoxResIds, screenX, screenY);
 
         leftMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
