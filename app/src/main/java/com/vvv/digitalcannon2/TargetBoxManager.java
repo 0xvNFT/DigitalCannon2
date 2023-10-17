@@ -25,8 +25,8 @@ public class TargetBoxManager {
             do {
                 x = random.nextInt(screenX - boxWidth);
                 y = -boxHeight - random.nextInt(500);
-            } while (doesOverlap(x, y, boxWidth, boxHeight));
-            targetBoxes.add(new TargetBox(context, resId, x, y, 3, delay));
+            } while (doesOverlap(x, y, boxWidth, boxHeight, null));
+            targetBoxes.add(new TargetBox(context, resId, x, y, 2, delay));
         }
     }
 
@@ -35,10 +35,12 @@ public class TargetBoxManager {
             targetBox.update();
             if (targetBox.y > screenY) {
                 int x, y;
+                int maxTries = 10;
+                int tries = 0;
                 do {
                     x = random.nextInt(screenX - boxWidth);
                     y = -boxHeight;
-                } while (doesOverlap(x, y, boxWidth, boxHeight));
+                } while (doesOverlap(x, y, boxWidth, boxHeight, targetBox) && tries < maxTries);
                 targetBox.x = x;
                 targetBox.y = y;
                 targetBox.delay = random.nextInt(100);
@@ -52,9 +54,12 @@ public class TargetBoxManager {
         }
     }
 
-    private boolean doesOverlap(int x, int y, int width, int height) {
+    private boolean doesOverlap(int x, int y, int width, int height, TargetBox exclude) {
         Rect newRect = new Rect(x, y, x + width, y + height);
         for (TargetBox box : targetBoxes) {
+            if (box == exclude) {
+                continue;
+            }
             Rect existingRect = new Rect(box.x, box.y, box.x + width, box.y + height);
             if (newRect.intersect(existingRect)) {
                 return true;
@@ -62,5 +67,6 @@ public class TargetBoxManager {
         }
         return false;
     }
+
 
 }
