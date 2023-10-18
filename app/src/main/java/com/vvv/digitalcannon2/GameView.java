@@ -33,6 +33,7 @@ public class GameView extends SurfaceView implements Runnable {
     private final MiniCannon leftMiniCannon;
     private final MiniCannon rightMiniCannon;
     private final TargetBoxManager targetBoxManager;
+    private final int endLineY;
     public GameView(Context context) {
         super(context);
 
@@ -74,6 +75,7 @@ public class GameView extends SurfaceView implements Runnable {
         leftMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
         rightMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
         initStateButtons();
+        endLineY = screenY - cannon.getHeight() - 100;
     }
 
     private void initStateButtons() {
@@ -183,8 +185,6 @@ public class GameView extends SurfaceView implements Runnable {
             rightMiniCannon.draw(canvas);
             cannonBallManager.drawAll(canvas);
 
-            targetBoxManager.drawAll(canvas);
-
             leftMiniCannonBallManager.drawAll(canvas);
             rightMiniCannonBallManager.drawAll(canvas);
 
@@ -196,6 +196,12 @@ public class GameView extends SurfaceView implements Runnable {
             Point rightTip = rightMiniCannon.getTipCoordinates();
             canvas.drawCircle(rightTip.x, rightTip.y, circleRadius, redPaint);
 
+            targetBoxManager.drawAll(canvas);
+
+            Paint linePaint = new Paint();
+            linePaint.setColor(Color.WHITE);
+            linePaint.setStrokeWidth(5);
+            canvas.drawLine(0, endLineY, screenX, endLineY, linePaint);
             drawUIElements(canvas);
 
             surfaceHolder.unlockCanvasAndPost(canvas);

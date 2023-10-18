@@ -15,10 +15,12 @@ public class TargetBoxManager {
     private final int boxHeight = 50;
     private final int screenX;
     private final Random random = new Random();
+    private final int endLineY;
 
     public TargetBoxManager(Context context, int[] drawableResIds, int screenX, int screenY) {
         this.screenX = screenX;
         this.screenY = screenY;
+        this.endLineY = screenY - boxHeight;
         for (int resId : drawableResIds) {
             int delay = random.nextInt(100);
             int x, y;
@@ -26,21 +28,21 @@ public class TargetBoxManager {
                 x = random.nextInt(screenX - boxWidth);
                 y = -boxHeight - random.nextInt(500);
             } while (doesOverlap(x, y, boxWidth, boxHeight, null));
-            targetBoxes.add(new TargetBox(context, resId, x, y, 2, delay));
+            targetBoxes.add(new TargetBox(context, resId, x, y, 1, delay));
         }
     }
 
     public void updateAll() {
         for (TargetBox targetBox : new ArrayList<>(targetBoxes)) {
             targetBox.update();
-            if (targetBox.y > screenY) {
+            if (targetBox.y > endLineY) {
                 int x, y;
                 int maxTries = 10;
                 int tries = 0;
                 do {
                     x = random.nextInt(screenX - boxWidth);
                     y = -boxHeight;
-                } while (doesOverlap(x, y, boxWidth, boxHeight, targetBox) && tries < maxTries);
+                } while (doesOverlap(x, y, boxWidth, boxHeight, targetBox));
                 targetBox.x = x;
                 targetBox.y = y;
                 targetBox.delay = random.nextInt(100);

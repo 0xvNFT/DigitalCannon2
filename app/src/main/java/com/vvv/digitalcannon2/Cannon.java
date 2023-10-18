@@ -54,5 +54,8 @@ public class Cannon {
         return new Point(finalX, finalY);
     }
 
+    public int getHeight() {
+        return bitmap.getHeight();
+    }
 }
 

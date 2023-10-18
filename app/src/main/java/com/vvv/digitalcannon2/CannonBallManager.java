@@ -58,11 +58,11 @@ public class CannonBallManager {
     }
 
 
-    public void updateAll(int screenX, int screenY) {
+    public void updateAll(int screenX, int endLineY) {
         for (CannonBall cannonBall : cannonBalls) {
-            cannonBall.update(screenX, screenY);
+            cannonBall.update(screenX, endLineY);
 
-            if (cannonBall.y > screenY) {
+            if (cannonBall.y > endLineY) {
                 cannonBall.fired = false;
             }
         }
