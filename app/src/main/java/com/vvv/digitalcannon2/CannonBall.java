@@ -10,7 +10,7 @@ public class CannonBall {
     public int x, y;
     public boolean fired = false;
     private int velocityX = 0, velocityY = -10;
-
+    private boolean isFirstLaunch = true;
 
     public CannonBall(Context context, int drawableResId) {
         bitmap = BitmapFactory.decodeResource(context.getResources(), drawableResId);
@@ -30,9 +30,10 @@ public class CannonBall {
 
     public void fire() {
         fired = true;
+        isFirstLaunch = true;
     }
 
-    public void update(int screenX, int screenY) {
+    public void update(int screenX, int endLineY) {
         if (fired) {
             x += velocityX;
             y += velocityY;
@@ -51,8 +52,17 @@ public class CannonBall {
             if (y <= 0) {
                 velocityY = -velocityY;
             }
+
+            if (y > endLineY) {
+                if (isFirstLaunch) {
+                    isFirstLaunch = false;
+                } else {
+                    fired = false;
+                }
+            }
         }
     }
+
 
 
     public void draw(Canvas canvas) {

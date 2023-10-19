@@ -17,10 +17,10 @@ public class TargetBoxManager {
     private final Random random = new Random();
     private final int endLineY;
 
-    public TargetBoxManager(Context context, int[] drawableResIds, int screenX, int screenY) {
+    public TargetBoxManager(Context context, int[] drawableResIds, int screenX, int screenY, int endLineY) {
         this.screenX = screenX;
         this.screenY = screenY;
-        this.endLineY = screenY - boxHeight;
+        this.endLineY = endLineY;
         for (int resId : drawableResIds) {
             int delay = random.nextInt(100);
             int x, y;
@@ -37,8 +37,6 @@ public class TargetBoxManager {
             targetBox.update();
             if (targetBox.y > endLineY) {
                 int x, y;
-                int maxTries = 10;
-                int tries = 0;
                 do {
                     x = random.nextInt(screenX - boxWidth);
                     y = -boxHeight;

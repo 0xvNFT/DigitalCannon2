@@ -65,17 +65,19 @@ public class GameView extends SurfaceView implements Runnable {
         int offsetXRight = screenX / 3;
         float miniCannonScale = screenY / 3000f;
 
+        endLineY = screenY - cannon.getHeight() - 100;
+
         leftMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXLeft, miniCannonScale, cannon);
         rightMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXRight, miniCannonScale, cannon);
 
         cannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 1500, screenX, 1);
         int[] targetBoxResIds = {R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five};
-        targetBoxManager = new TargetBoxManager(context, targetBoxResIds, screenX, screenY);
+        targetBoxManager = new TargetBoxManager(context, targetBoxResIds, screenX, screenY, endLineY);
 
         leftMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
         rightMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
         initStateButtons();
-        endLineY = screenY - cannon.getHeight() - 100;
+
     }
 
     private void initStateButtons() {
@@ -167,10 +169,10 @@ public class GameView extends SurfaceView implements Runnable {
         leftMiniCannon.update();
         rightMiniCannon.update();
 
-        cannonBallManager.updateAll(screenX, screenY);
         targetBoxManager.updateAll();
-        leftMiniCannonBallManager.updateAll(screenX, screenY);
-        rightMiniCannonBallManager.updateAll(screenX, screenY);
+        cannonBallManager.updateAll(screenX, endLineY);
+        leftMiniCannonBallManager.updateAll(screenX, endLineY);
+        rightMiniCannonBallManager.updateAll(screenX, endLineY);
     }
 
     private void draw() {
