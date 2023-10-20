@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -62,6 +63,26 @@ public class TargetBoxManager {
             }
             Rect existingRect = new Rect(box.x, box.y, box.x + width, box.y + height);
             if (newRect.intersect(existingRect)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkCollision(CannonBall cannonBall) {
+        Rect cannonBallRect = new Rect(cannonBall.x, cannonBall.y,
+                cannonBall.x + cannonBall.bitmap.getWidth(),
+                cannonBall.y + cannonBall.bitmap.getHeight());
+
+        for (Iterator<TargetBox> iterator = targetBoxes.iterator(); iterator.hasNext(); ) {
+            TargetBox targetBox = iterator.next();
+            Rect targetBoxRect = new Rect(targetBox.x, targetBox.y,
+                    targetBox.x + boxWidth,
+                    targetBox.y + boxHeight);
+
+            if (Rect.intersects(cannonBallRect, targetBoxRect)) {
+                // Remove the target box and return true to indicate a collision
+                iterator.remove();
                 return true;
             }
         }

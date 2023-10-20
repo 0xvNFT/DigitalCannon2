@@ -65,7 +65,7 @@ public class GameView extends SurfaceView implements Runnable {
         int offsetXRight = screenX / 3;
         float miniCannonScale = screenY / 3000f;
 
-        endLineY = screenY - cannon.getHeight() - 100;
+        endLineY = screenY - cannon.getHeight() + 100;
 
         leftMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXLeft, miniCannonScale, cannon);
         rightMiniCannon = new MiniCannon(context, R.drawable.cannon, screenX, screenY, offsetXRight, miniCannonScale, cannon);
@@ -173,6 +173,16 @@ public class GameView extends SurfaceView implements Runnable {
         cannonBallManager.updateAll(screenX, endLineY);
         leftMiniCannonBallManager.updateAll(screenX, endLineY);
         rightMiniCannonBallManager.updateAll(screenX, endLineY);
+
+        for (CannonBall cannonBall : cannonBallManager.cannonBalls) {
+            if (cannonBall.fired) {
+                if (targetBoxManager.checkCollision(cannonBall)) {
+
+                    cannonBall.fired = false;
+                }
+            }
+        }
+
     }
 
     private void draw() {

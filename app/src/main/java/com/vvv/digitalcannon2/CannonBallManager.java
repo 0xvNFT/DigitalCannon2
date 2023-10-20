@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CannonBallManager {
-    private final List<CannonBall> cannonBalls = new ArrayList<>();
+    final List<CannonBall> cannonBalls = new ArrayList<>();
     private final long fireInterval;
     private final int screenX;
     private long lastFiredTime = 0;

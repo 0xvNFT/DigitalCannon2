@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 public class CannonBall {
-    private final Bitmap bitmap;
+    final Bitmap bitmap;
     public int x, y;
     public boolean fired = false;
     private int velocityX = 0, velocityY = -10;
