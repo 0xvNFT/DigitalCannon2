@@ -69,7 +69,7 @@ public class TargetBoxManager {
         return false;
     }
 
-    public boolean checkCollision(CannonBall cannonBall) {
+    public boolean checkCollision(CannonBall cannonBall, int[] drawableResIds, Context context) {
         Rect cannonBallRect = new Rect(cannonBall.x, cannonBall.y,
                 cannonBall.x + cannonBall.bitmap.getWidth(),
                 cannonBall.y + cannonBall.bitmap.getHeight());
@@ -81,8 +81,18 @@ public class TargetBoxManager {
                     targetBox.y + boxHeight);
 
             if (Rect.intersects(cannonBallRect, targetBoxRect)) {
-                // Remove the target box and return true to indicate a collision
                 iterator.remove();
+
+                int delay = random.nextInt(100);
+                int x, y;
+                do {
+                    x = random.nextInt(screenX - boxWidth);
+                    y = -boxHeight - random.nextInt(500);
+                } while (doesOverlap(x, y, boxWidth, boxHeight, null));
+
+                int resId = drawableResIds[random.nextInt(drawableResIds.length)];
+                targetBoxes.add(new TargetBox(context, resId, x, y, 1, delay));
+
                 return true;
             }
         }

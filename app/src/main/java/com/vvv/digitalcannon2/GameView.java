@@ -174,14 +174,9 @@ public class GameView extends SurfaceView implements Runnable {
         leftMiniCannonBallManager.updateAll(screenX, endLineY);
         rightMiniCannonBallManager.updateAll(screenX, endLineY);
 
-        for (CannonBall cannonBall : cannonBallManager.cannonBalls) {
-            if (cannonBall.fired) {
-                if (targetBoxManager.checkCollision(cannonBall)) {
-
-                    cannonBall.fired = false;
-                }
-            }
-        }
+        checkCollisionForCannonBallManager(cannonBallManager);
+        checkCollisionForCannonBallManager(leftMiniCannonBallManager);
+        checkCollisionForCannonBallManager(rightMiniCannonBallManager);
 
     }
 
@@ -229,6 +224,17 @@ public class GameView extends SurfaceView implements Runnable {
 
         int fps = fpsCounter.countFPS();
         canvas.drawText("FPS: " + fps, 10, 50, whitePaint);
+    }
+
+    private void checkCollisionForCannonBallManager(CannonBallManager cannonBallManager) {
+        int[] targetBoxResIds = {R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five};
+        for (CannonBall cannonBall : cannonBallManager.cannonBalls) {
+            if (cannonBall.fired) {
+                if (targetBoxManager.checkCollision(cannonBall, targetBoxResIds, getContext())) {
+                    cannonBall.fired = false;
+                }
+            }
+        }
     }
 
     public void resume() {
