@@ -6,10 +6,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 public class TargetBox {
-    private final Bitmap bitmap;
+    public final Bitmap bitmap;
     public int x, y;
     private final int speed;
     public int delay;
+    public int currentLevel;
 
     public TargetBox(Context context, int drawableResId, int x, int y, int speed, int delay) {
         bitmap = BitmapFactory.decodeResource(context.getResources(), drawableResId);

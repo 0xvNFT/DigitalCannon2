@@ -29,7 +29,7 @@ public class TargetBoxManager {
                 x = random.nextInt(screenX - boxWidth);
                 y = -boxHeight - random.nextInt(500);
             } while (doesOverlap(x, y, boxWidth, boxHeight, null));
-            targetBoxes.add(new TargetBox(context, resId, x, y, 1, delay));
+            targetBoxes.add(new TargetBox(context, resId, x, y, 2, delay));
         }
     }
 
@@ -69,34 +69,42 @@ public class TargetBoxManager {
         return false;
     }
 
-    public boolean checkCollision(CannonBall cannonBall, int[] drawableResIds, Context context) {
+    public boolean checkCollision(CannonBall cannonBall, int[] targetBoxResIds, Context context) {
         Rect cannonBallRect = new Rect(cannonBall.x, cannonBall.y,
                 cannonBall.x + cannonBall.bitmap.getWidth(),
                 cannonBall.y + cannonBall.bitmap.getHeight());
 
-        for (Iterator<TargetBox> iterator = targetBoxes.iterator(); iterator.hasNext(); ) {
+        Iterator<TargetBox> iterator = targetBoxes.iterator();
+        while (iterator.hasNext()) {
             TargetBox targetBox = iterator.next();
             Rect targetBoxRect = new Rect(targetBox.x, targetBox.y,
-                    targetBox.x + boxWidth,
-                    targetBox.y + boxHeight);
+                    targetBox.x + targetBox.bitmap.getWidth(),
+                    targetBox.y + targetBox.bitmap.getHeight());
 
             if (Rect.intersects(cannonBallRect, targetBoxRect)) {
+                // Remove the target box
                 iterator.remove();
+                respawnTargetBox(targetBoxResIds, context);
 
-                int delay = random.nextInt(100);
-                int x, y;
-                do {
-                    x = random.nextInt(screenX - boxWidth);
-                    y = -boxHeight - random.nextInt(500);
-                } while (doesOverlap(x, y, boxWidth, boxHeight, null));
-
-                int resId = drawableResIds[random.nextInt(drawableResIds.length)];
-                targetBoxes.add(new TargetBox(context, resId, x, y, 1, delay));
-
+                // Bounce the cannonball off the target box
+                cannonBall.velocityY = -cannonBall.velocityY;
                 return true;
             }
         }
         return false;
+    }
+
+
+    public void respawnTargetBox(int[] drawableResIds, Context context) {
+        int resId = drawableResIds[random.nextInt(drawableResIds.length)];
+        int x, y;
+
+        do {
+            x = random.nextInt(screenX - boxWidth);
+            y = -boxHeight - random.nextInt(500);
+        } while (doesOverlap(x, y, boxWidth, boxHeight, null));
+
+        targetBoxes.add(new TargetBox(context, resId, x, y, 2, random.nextInt(100)));
     }
 
 

@@ -227,15 +227,13 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void checkCollisionForCannonBallManager(CannonBallManager cannonBallManager) {
-        int[] targetBoxResIds = {R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five};
         for (CannonBall cannonBall : cannonBallManager.cannonBalls) {
             if (cannonBall.fired) {
-                if (targetBoxManager.checkCollision(cannonBall, targetBoxResIds, getContext())) {
-                    cannonBall.fired = false;
-                }
+                targetBoxManager.checkCollision(cannonBall, new int[]{R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five}, getContext());
             }
         }
     }
+
 
     public void resume() {
         isRunning = true;

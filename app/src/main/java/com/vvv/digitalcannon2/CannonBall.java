@@ -9,7 +9,8 @@ public class CannonBall {
     final Bitmap bitmap;
     public int x, y;
     public boolean fired = false;
-    private int velocityX = 0, velocityY = -10;
+    public int velocityX = 0;
+    public int velocityY = -10;
     private boolean isFirstLaunch = true;
 
     public CannonBall(Context context, int drawableResId) {
