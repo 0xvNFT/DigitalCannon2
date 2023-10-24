@@ -75,7 +75,7 @@ public class TargetBoxManager {
         return false;
     }
 
-    public void checkCollision(CannonBall cannonBall, int[] targetBoxResIds, Context context) {
+    public void checkCollision(CannonBall cannonBall, int[] targetBoxResIds, Context context, EventManager eventManager) {
         Rect cannonBallRect = new Rect(cannonBall.x, cannonBall.y,
                 cannonBall.x + cannonBall.bitmap.getWidth(),
                 cannonBall.y + cannonBall.bitmap.getHeight());
@@ -116,11 +116,14 @@ public class TargetBoxManager {
                         cannonBallRect.bottom = cannonBall.y + cannonBall.bitmap.getHeight();
                     }
                 }
+                eventManager.incrementScore(1);
 
                 targetBox.currentLevel--;
                 if (targetBox.currentLevel <= 0) {
                     iterator.remove();
-                    respawnTargetBox(targetBoxResIds, context);
+                    respawnTargetBox(targetBoxResIds, context, eventManager);
+                    eventManager.incrementScore(1);
+
                 } else if (targetBox.currentLevel <= targetBoxResIds.length) {
                     targetBox.bitmap = BitmapFactory.decodeResource(context.getResources(), targetBoxResIds[targetBox.currentLevel - 1]);
                 }
@@ -133,7 +136,7 @@ public class TargetBoxManager {
     }
 
 
-    public void respawnTargetBox(int[] drawableResIds, Context context) {
+    public void respawnTargetBox(int[] drawableResIds, Context context, EventManager eventManager) {
         int x, y;
         int level = random.nextInt(drawableResIds.length) + 1;
         int resId = drawableResIds[level - 1];
@@ -143,6 +146,9 @@ public class TargetBoxManager {
         } while (doesOverlap(x, y, boxWidth, boxHeight, null));
 
         targetBoxes.add(new TargetBox(context, resId, x, y, 2, random.nextInt(100), level));
+
+        eventManager.incrementScore(1);
+
     }
 
 

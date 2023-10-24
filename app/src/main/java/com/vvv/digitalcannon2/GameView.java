@@ -211,6 +211,9 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawLine(0, endLineY, screenX, endLineY, linePaint);
             drawUIElements(canvas);
 
+            int currentScore = eventManager.getScore();
+            canvas.drawText("Score: " + currentScore, 10, 50, whitePaint);
+
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
@@ -229,7 +232,7 @@ public class GameView extends SurfaceView implements Runnable {
     private void checkCollisionForCannonBallManager(CannonBallManager cannonBallManager) {
         for (CannonBall cannonBall : cannonBallManager.cannonBalls) {
             if (cannonBall.fired) {
-                targetBoxManager.checkCollision(cannonBall, new int[]{R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five}, getContext());
+                targetBoxManager.checkCollision(cannonBall, new int[]{R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five}, getContext(), eventManager);
             }
         }
     }

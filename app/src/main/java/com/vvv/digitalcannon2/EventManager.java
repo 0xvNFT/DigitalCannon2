@@ -15,13 +15,19 @@ public class EventManager {
         }
     }
 
+    public void incrementScore(int value) {
+        score += value;
+    }
+
+
     public void processEvents() {
         synchronized (eventQueue) {
-            for (MotionEvent event : eventQueue) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    score++;
-                }
-            }
+//            Testing only
+//            for (MotionEvent event : eventQueue) {
+//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                    score++;
+//                }
+//            }
             eventQueue.clear();
         }
     }
