@@ -1,6 +1,7 @@
 package com.vvv.digitalcannon2;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
@@ -22,6 +23,7 @@ public class TargetBoxManager {
         this.screenX = screenX;
         this.screenY = screenY;
         this.endLineY = endLineY;
+        int level = 5;
         for (int resId : drawableResIds) {
             int delay = random.nextInt(100);
             int x, y;
@@ -29,7 +31,8 @@ public class TargetBoxManager {
                 x = random.nextInt(screenX - boxWidth);
                 y = -boxHeight - random.nextInt(500);
             } while (doesOverlap(x, y, boxWidth, boxHeight, null));
-            targetBoxes.add(new TargetBox(context, resId, x, y, 2, delay));
+            targetBoxes.add(new TargetBox(context, resId, x, y, 2, delay, level));
+            level--;
         }
     }
 
@@ -82,12 +85,17 @@ public class TargetBoxManager {
                     targetBox.y + targetBox.bitmap.getHeight());
 
             if (Rect.intersects(cannonBallRect, targetBoxRect)) {
-                // Remove the target box
-                iterator.remove();
-                respawnTargetBox(targetBoxResIds, context);
-
-                // Bounce the cannonball off the target box
                 cannonBall.velocityY = -cannonBall.velocityY;
+
+                targetBox.currentLevel--;
+
+                if (targetBox.currentLevel <= 0) {
+                    iterator.remove();
+                    respawnTargetBox(targetBoxResIds, context);
+                } else {
+                    targetBox.bitmap = BitmapFactory.decodeResource(context.getResources(), targetBoxResIds[targetBox.currentLevel - 1]);
+                }
+
                 return true;
             }
         }
@@ -96,15 +104,15 @@ public class TargetBoxManager {
 
 
     public void respawnTargetBox(int[] drawableResIds, Context context) {
-        int resId = drawableResIds[random.nextInt(drawableResIds.length)];
         int x, y;
-
+        int level = random.nextInt(drawableResIds.length) + 1;
+        int resId = drawableResIds[level - 1];
         do {
             x = random.nextInt(screenX - boxWidth);
             y = -boxHeight - random.nextInt(500);
         } while (doesOverlap(x, y, boxWidth, boxHeight, null));
 
-        targetBoxes.add(new TargetBox(context, resId, x, y, 2, random.nextInt(100)));
+        targetBoxes.add(new TargetBox(context, resId, x, y, 2, random.nextInt(100), level));
     }
 
 
