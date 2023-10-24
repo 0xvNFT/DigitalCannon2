@@ -23,22 +23,25 @@ public class TargetBoxManager {
         this.screenX = screenX;
         this.screenY = screenY;
         this.endLineY = endLineY;
-        int level = 5;
-        for (int resId : drawableResIds) {
+        for (int i = 0; i < drawableResIds.length; i++) {
             int delay = random.nextInt(100);
             int x, y;
+            int resId = drawableResIds[i];
+            int level = i + 1;
             do {
                 x = random.nextInt(screenX - boxWidth);
                 y = -boxHeight - random.nextInt(500);
             } while (doesOverlap(x, y, boxWidth, boxHeight, null));
             targetBoxes.add(new TargetBox(context, resId, x, y, 2, delay, level));
-            level--;
         }
     }
 
     public void updateAll() {
         for (TargetBox targetBox : new ArrayList<>(targetBoxes)) {
             targetBox.update();
+            if (targetBox.hitCooldown > 0) {
+                targetBox.hitCooldown--;
+            }
             if (targetBox.y > endLineY) {
                 int x, y;
                 do {
@@ -72,7 +75,7 @@ public class TargetBoxManager {
         return false;
     }
 
-    public boolean checkCollision(CannonBall cannonBall, int[] targetBoxResIds, Context context) {
+    public void checkCollision(CannonBall cannonBall, int[] targetBoxResIds, Context context) {
         Rect cannonBallRect = new Rect(cannonBall.x, cannonBall.y,
                 cannonBall.x + cannonBall.bitmap.getWidth(),
                 cannonBall.y + cannonBall.bitmap.getHeight());
@@ -80,26 +83,53 @@ public class TargetBoxManager {
         Iterator<TargetBox> iterator = targetBoxes.iterator();
         while (iterator.hasNext()) {
             TargetBox targetBox = iterator.next();
+
+            if (targetBox.hitCooldown > 0) {
+                continue;
+            }
+
             Rect targetBoxRect = new Rect(targetBox.x, targetBox.y,
                     targetBox.x + targetBox.bitmap.getWidth(),
                     targetBox.y + targetBox.bitmap.getHeight());
 
             if (Rect.intersects(cannonBallRect, targetBoxRect)) {
-                cannonBall.velocityY = -cannonBall.velocityY;
+                int dx = Math.abs(cannonBall.x - targetBox.x);
+                int dy = Math.abs(cannonBall.y - targetBox.y);
+
+                if (dx > dy) {
+                    cannonBall.velocityX = -cannonBall.velocityX;
+
+                    while (Rect.intersects(cannonBallRect, targetBoxRect)) {
+                        cannonBall.x += (int) Math.signum(cannonBall.velocityX);
+                        cannonBall.y += (int) Math.signum(cannonBall.velocityY);
+                        cannonBallRect.left = cannonBall.x;
+                        cannonBallRect.right = cannonBall.x + cannonBall.bitmap.getWidth();
+                        cannonBallRect.top = cannonBall.y;
+                        cannonBallRect.bottom = cannonBall.y + cannonBall.bitmap.getHeight();
+                    }
+                } else {
+                    cannonBall.velocityY = -cannonBall.velocityY;
+
+                    while (Rect.intersects(cannonBallRect, targetBoxRect)) {
+                        cannonBall.y += cannonBall.velocityY;
+                        cannonBallRect.top = cannonBall.y;
+                        cannonBallRect.bottom = cannonBall.y + cannonBall.bitmap.getHeight();
+                    }
+                }
 
                 targetBox.currentLevel--;
-
                 if (targetBox.currentLevel <= 0) {
                     iterator.remove();
                     respawnTargetBox(targetBoxResIds, context);
-                } else {
+                } else if (targetBox.currentLevel <= targetBoxResIds.length) {
                     targetBox.bitmap = BitmapFactory.decodeResource(context.getResources(), targetBoxResIds[targetBox.currentLevel - 1]);
                 }
 
-                return true;
+                targetBox.hitCooldown = 5;
+
+                return;
             }
         }
-        return false;
     }
 
 

@@ -11,6 +11,7 @@ public class TargetBox {
     private final int speed;
     public int delay;
     public int currentLevel;
+    public int hitCooldown;
 
     public TargetBox(Context context, int drawableResId, int x, int y, int speed, int delay, int level) {
         bitmap = BitmapFactory.decodeResource(context.getResources(), drawableResId);
