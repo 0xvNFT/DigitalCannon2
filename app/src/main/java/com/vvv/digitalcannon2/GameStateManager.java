@@ -19,6 +19,7 @@ public class GameStateManager {
         STARTING,
         PLAYING,
         PAUSED,
+        RESUMING,
         GAME_OVER
     }
 }

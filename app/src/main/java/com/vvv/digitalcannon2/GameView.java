@@ -34,6 +34,10 @@ public class GameView extends SurfaceView implements Runnable {
     private final MiniCannon rightMiniCannon;
     private final TargetBoxManager targetBoxManager;
     private final int endLineY;
+    private final boolean justResumed = false;
+    private long resumeDisplayTime = 0;
+    private int resumeTextAlpha = 255;
+
     public GameView(Context context) {
         super(context);
 
@@ -81,10 +85,11 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void initStateButtons() {
-        int buttonSize = 100;
-        pauseButton = new Rect(screenX - buttonSize, 0, screenX, buttonSize);
-        resumeButton = new Rect(screenX - buttonSize, buttonSize, screenX, buttonSize * 2);
+        int buttonSize = 50;
+        pauseButton = new Rect(0, 0, buttonSize, buttonSize);
+        resumeButton = new Rect(0, buttonSize, buttonSize, buttonSize * 2);
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -109,11 +114,14 @@ public class GameView extends SurfaceView implements Runnable {
             gameStateManager.setCurrentState(GameStateManager.GameState.PAUSED);
         } else if (resumeButton.contains(x, y)) {
             gameStateManager.setCurrentState(GameStateManager.GameState.PLAYING);
+            resumeDisplayTime = System.currentTimeMillis();
+            resumeTextAlpha = 255;
             synchronized (lock) {
                 lock.notifyAll();
             }
         }
     }
+
 
     @Override
     public void run() {
@@ -139,6 +147,9 @@ public class GameView extends SurfaceView implements Runnable {
                         draw();
                         elapsedRenderTime -= targetRenderTime;
                     }
+                    break;
+                case RESUMING:
+                    gameStateManager.setCurrentState(GameStateManager.GameState.PLAYING);
                     break;
                 case PAUSED:
                     synchronized (lock) {
@@ -211,23 +222,45 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawLine(0, endLineY, screenX, endLineY, linePaint);
             drawUIElements(canvas);
 
-            int currentScore = eventManager.getScore();
-            canvas.drawText("Score: " + currentScore, 10, 50, whitePaint);
-
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
 
     private void drawUIElements(Canvas canvas) {
+        redPaint.setAlpha(128);
         canvas.drawRect(pauseButton, redPaint);
+
+        greenPaint.setAlpha(128);
         canvas.drawRect(resumeButton, greenPaint);
+
+        redPaint.setAlpha(255);
+        greenPaint.setAlpha(255);
 
         int score = eventManager.getScore();
         canvas.drawText("Score: " + score, (float) screenX / 2 - 60, 50, whitePaint);
 
-        int fps = fpsCounter.countFPS();
-        canvas.drawText("FPS: " + fps, 10, 50, whitePaint);
+        if (gameStateManager.getCurrentState() == GameStateManager.GameState.PAUSED) {
+            canvas.drawText("Game Paused", (float) screenX / 2 - 100, (float) screenY / 2, whitePaint);
+        }
+
+        if (resumeDisplayTime > 0) {
+            long currentTime = System.currentTimeMillis();
+            long elapsedTime = currentTime - resumeDisplayTime;
+
+            if (elapsedTime < 1000) {
+                whitePaint.setAlpha(resumeTextAlpha);
+                canvas.drawText("Game Resumed", (float) screenX / 2 - 100, (float) screenY / 2, whitePaint);
+                whitePaint.setAlpha(255);
+            } else {
+                resumeDisplayTime = 0;
+                resumeTextAlpha = 255;
+            }
+        }
+        // Commented FPS Counter
+        // int fps = fpsCounter.countFPS();
+        // canvas.drawText("FPS: " + fps, 10, 50, whitePaint);
     }
+
 
     private void checkCollisionForCannonBallManager(CannonBallManager cannonBallManager) {
         for (CannonBall cannonBall : cannonBallManager.cannonBalls) {
