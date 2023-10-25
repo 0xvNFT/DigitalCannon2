@@ -34,7 +34,6 @@ public class GameView extends SurfaceView implements Runnable {
     private final MiniCannon rightMiniCannon;
     private final TargetBoxManager targetBoxManager;
     private final int endLineY;
-    private final boolean justResumed = false;
     private long resumeDisplayTime = 0;
     private int resumeTextAlpha = 255;
 
@@ -111,13 +110,17 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void touchStateButtons(int x, int y) {
         if (pauseButton.contains(x, y)) {
-            gameStateManager.setCurrentState(GameStateManager.GameState.PAUSED);
+            if (gameStateManager.getCurrentState() == GameStateManager.GameState.PLAYING) {
+                gameStateManager.setCurrentState(GameStateManager.GameState.PAUSED);
+            }
         } else if (resumeButton.contains(x, y)) {
-            gameStateManager.setCurrentState(GameStateManager.GameState.PLAYING);
-            resumeDisplayTime = System.currentTimeMillis();
-            resumeTextAlpha = 255;
-            synchronized (lock) {
-                lock.notifyAll();
+            if (gameStateManager.getCurrentState() == GameStateManager.GameState.PAUSED) {
+                gameStateManager.setCurrentState(GameStateManager.GameState.PLAYING);
+                resumeDisplayTime = System.currentTimeMillis();
+                resumeTextAlpha = 255;
+                synchronized (lock) {
+                    lock.notifyAll();
+                }
             }
         }
     }
@@ -127,7 +130,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void run() {
         long targetUpdateTime = 1000 / 60;
         long targetRenderTime = 1000 / 120;
-        long startTime, elapsedUpdateTime = 0, elapsedRenderTime = 0;
+        long elapsedUpdateTime = 0, elapsedRenderTime = 0;
         long currentTime, lastTime = System.currentTimeMillis();
 
         while (isRunning) {
@@ -137,31 +140,24 @@ public class GameView extends SurfaceView implements Runnable {
             elapsedUpdateTime += deltaTime;
             elapsedRenderTime += deltaTime;
 
-            switch (gameStateManager.getCurrentState()) {
-                case PLAYING:
-                    if (elapsedUpdateTime >= targetUpdateTime) {
-                        update();
-                        elapsedUpdateTime -= targetUpdateTime;
+
+            if (gameStateManager.getCurrentState() == GameStateManager.GameState.PAUSED) {
+                synchronized (lock) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    if (elapsedRenderTime >= targetRenderTime) {
-                        draw();
-                        elapsedRenderTime -= targetRenderTime;
-                    }
-                    break;
-                case RESUMING:
-                    gameStateManager.setCurrentState(GameStateManager.GameState.PLAYING);
-                    break;
-                case PAUSED:
-                    synchronized (lock) {
-                        try {
-                            lock.wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-                default:
-                    break;
+                }
+            } else {
+                if (elapsedUpdateTime >= targetUpdateTime) {
+                    update();
+                    elapsedUpdateTime -= targetUpdateTime;
+                }
+                if (elapsedRenderTime >= targetRenderTime) {
+                    draw();
+                    elapsedRenderTime -= targetRenderTime;
+                }
             }
 
             lastTime = currentTime;
@@ -172,6 +168,7 @@ public class GameView extends SurfaceView implements Runnable {
             }
         }
     }
+
 
     private void update() {
         eventManager.processEvents();
@@ -286,14 +283,13 @@ public class GameView extends SurfaceView implements Runnable {
     public void pause() {
         isRunning = false;
         gameStateManager.setCurrentState(GameStateManager.GameState.PAUSED);
-        try {
-            if (gameThread != null && gameThread.isAlive()) {
-                gameThread.join();
-                gameThread = null;
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if (gameThread != null && gameThread.isAlive()) {
+//                gameThread.join();
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
 }
