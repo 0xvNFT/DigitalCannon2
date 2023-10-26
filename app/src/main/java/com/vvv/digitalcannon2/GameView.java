@@ -271,25 +271,21 @@ public class GameView extends SurfaceView implements Runnable {
     public void resume() {
         isRunning = true;
         gameStateManager.setCurrentState(GameStateManager.GameState.PLAYING);
+        synchronized (lock) {
+            lock.notifyAll();
+        }
         if (gameThread == null || !gameThread.isAlive()) {
             gameThread = new Thread(this);
             gameThread.start();
         }
-        synchronized (lock) {
-            lock.notifyAll();
-        }
     }
+
 
     public void pause() {
         isRunning = false;
         gameStateManager.setCurrentState(GameStateManager.GameState.PAUSED);
-//        try {
-//            if (gameThread != null && gameThread.isAlive()) {
-//                gameThread.join();
-//            }
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        synchronized (lock) {
+            lock.notifyAll();
+        }
     }
-
 }
