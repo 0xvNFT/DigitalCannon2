@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -36,11 +38,14 @@ public class GameView extends SurfaceView implements Runnable {
     private final int endLineY;
     private long resumeDisplayTime = 0;
     private int resumeTextAlpha = 255;
+    private final Health health;
+    private final Handler mainHandler;
 
     public GameView(Context context) {
         super(context);
 
         surfaceHolder = getHolder();
+        mainHandler = new Handler(Looper.getMainLooper());
 
         redPaint = new Paint();
         redPaint.setColor(Color.RED);
@@ -61,6 +66,8 @@ public class GameView extends SurfaceView implements Runnable {
         screenX = point.x;
         screenY = point.y;
 
+        health = new Health(context, 3, screenX);
+
         backgroundBitmap = new Background(context, R.drawable.game_bg, screenX, screenY);
         cannon = new Cannon(context, R.drawable.cannon, screenX, screenY);
 
@@ -75,7 +82,8 @@ public class GameView extends SurfaceView implements Runnable {
 
         cannonBallManager = new CannonBallManager(context, R.drawable.cannonball, 1500, screenX, 1);
         int[] targetBoxResIds = {R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four, R.drawable.five};
-        targetBoxManager = new TargetBoxManager(context, targetBoxResIds, screenX, screenY, endLineY);
+        targetBoxManager = new TargetBoxManager(context, targetBoxResIds, screenX, screenY, endLineY, health, mainHandler);
+        targetBoxManager.setGameView(this);
 
         leftMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
         rightMiniCannonBallManager = new CannonBallManager(context, R.drawable.mini_cannonball, 2000, screenX, miniCannonScale);
@@ -219,6 +227,8 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawLine(0, endLineY, screenX, endLineY, linePaint);
             drawUIElements(canvas);
 
+            health.draw(canvas);
+
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
@@ -267,7 +277,15 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    public void resetGameState() {
+        eventManager.resetScore();
+        health.reset();
 
+        // Reset TargetBoxManager, Cannon, etc. if needed
+
+        // Restart the game loop if it's stopped
+        // You may need to add logic to start your game loop again
+    }
     public void resume() {
         isRunning = true;
         gameStateManager.setCurrentState(GameStateManager.GameState.PLAYING);

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,11 +20,19 @@ public class TargetBoxManager {
     private final int screenX;
     private final Random random = new Random();
     private final int endLineY;
+    private final Health health;
+    private final Context context;
+    private final Handler mainHandler;
+    GameView gameView;
 
-    public TargetBoxManager(Context context, int[] drawableResIds, int screenX, int screenY, int endLineY) {
+    public TargetBoxManager(Context context, int[] drawableResIds, int screenX, int screenY, int endLineY, Health health, Handler mainHandler) {
+        this.context = context;
         this.screenX = screenX;
         this.screenY = screenY;
         this.endLineY = endLineY;
+        this.health = health;
+        this.mainHandler = mainHandler;
+
         for (int i = 0; i < drawableResIds.length; i++) {
             int delay = random.nextInt(100);
             int x, y;
@@ -36,13 +46,35 @@ public class TargetBoxManager {
         }
     }
 
+    public void setGameView(GameView gameView) {
+        this.gameView = gameView;
+    }
+
     public void updateAll() {
+
         for (TargetBox targetBox : new ArrayList<>(targetBoxes)) {
             targetBox.update();
             if (targetBox.hitCooldown > 0) {
                 targetBox.hitCooldown--;
             }
             if (targetBox.y > endLineY) {
+                health.decrement();
+                if (health.isDepleted()) {
+                    if (gameView != null) {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                GameOverDialog gameOverDialog = new GameOverDialog(context, new GameOverDialog.OnRetryListener() {
+                                    @Override
+                                    public void onRetry() {
+                                        gameView.resetGameState();
+                                    }
+                                });
+                                gameOverDialog.show();
+                            }
+                        });
+                    }
+                }
                 int x, y;
                 do {
                     x = random.nextInt(screenX - boxWidth);
@@ -150,6 +182,4 @@ public class TargetBoxManager {
         eventManager.incrementScore(1);
 
     }
-
-
 }

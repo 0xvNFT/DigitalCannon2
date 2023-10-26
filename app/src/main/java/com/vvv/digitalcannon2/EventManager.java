@@ -35,5 +35,9 @@ public class EventManager {
     public int getScore() {
         return score;
     }
+
+    public void resetScore() {
+        score = 0;
+    }
 }
 
